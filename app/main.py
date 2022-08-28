@@ -20,7 +20,7 @@ def handle_connection(client_conn, addr):
             data = data.decode()
             print(f"Received the data from {addr} \n {data}")
             strings = parse(data)
-            if strings and strings[0] == "ECHO":
+            if strings and strings[0].lower() == "ECHO":
                 respond_echo(client_conn, addr, strings[1:])
             else:
                 respond_ping(client_conn, addr)
