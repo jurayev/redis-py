@@ -2,7 +2,7 @@ import socket
 from commands.ping import respond_ping
 
 HOST = "127.0.0.1"  # The server's hostname or IP address
-PORT = 6539  # The port used by the server
+PORT = 6379  # The port used by the server
 
 
 def main():
