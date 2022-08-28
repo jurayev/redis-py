@@ -27,7 +27,7 @@ def main():
             while True:
                 client_conn, addr = server_socket.accept()  # wait for client accepting the connection
                 executor.submit(handle_connection, client_conn, addr)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ConnectionError):
         pass
     print(f"Connection {addr} is closed")
 
