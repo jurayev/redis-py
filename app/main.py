@@ -1,6 +1,9 @@
 import socket
 import concurrent.futures
+
+from commands.echo import respond_echo
 from commands.ping import respond_ping
+from utils.parser import parse
 
 HOST = "127.0.0.1"  # The server's hostname or IP address
 PORT = 6379  # The port used by the server
@@ -14,9 +17,16 @@ def handle_connection(client_conn, addr):
             data = client_conn.recv(1024)
             if not data:
                 break
-            print(f"Received the data from {addr} \n {data.decode()}")
-            respond_ping(client_conn, addr)
+            data = data.decode()
+            print(f"Received the data from {addr} \n {data}")
+            strings = parse(data)
+            if strings and strings[0] == "ECHO":
+                respond_echo(client_conn, addr, strings[1:])
+            else:
+                respond_ping(client_conn, addr)
             print("--------------------------------")
+    print(f"Connection {addr} is closed")
+
 
 def main():
     # creates socket, bind to a port, start listening, returns socket obj
@@ -29,7 +39,6 @@ def main():
                 executor.submit(handle_connection, client_conn, addr)
     except (KeyboardInterrupt, ConnectionError):
         pass
-    print(f"Connection {addr} is closed")
 
     server_socket.close()
     print(f"Redis server was shutdown")
