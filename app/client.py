@@ -8,7 +8,7 @@ PORT = 6379  # The port used by the server
 def handle_ping(s):
     print("PING, Y/N?")
     while input().lower() == "y":
-        s.sendall(f"+PING from {HOST}:{PORT}\r\n".encode())
+        s.sendall(f"*1\r\n$4\r\nPING\r\n".encode())
         data = s.recv(1024)
         print(f"Received {data!r}")
         print("PING again, Y/N?")

@@ -2,6 +2,7 @@ import socket
 import concurrent.futures
 
 from commands.echo import respond_echo
+from commands.err import respond_err
 from commands.ping import respond_ping
 from utils.parser import parse
 
@@ -22,8 +23,10 @@ def handle_connection(client_conn, addr):
             strings = parse(data)
             if strings and strings[0].upper() == "ECHO":
                 respond_echo(client_conn, addr, strings[1:])
-            else:
+            elif strings and strings[0].upper() == "PING":
                 respond_ping(client_conn, addr)
+            else:
+                respond_err(client_conn, addr)
             print("--------------------------------")
     print(f"Connection {addr} is closed")
 
