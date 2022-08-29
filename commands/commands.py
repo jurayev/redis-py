@@ -22,8 +22,9 @@ class Commands:
             key = data[0]
             value = storage.get(key)
             if not value:
-                raise KeyError
-            client_conn.sendall(f"+{value}\r\n".encode())
+                client_conn.sendall(b"$-1\r\n")
+            else:
+                client_conn.sendall(f"+{value}\r\n".encode())
             print(f"Send GET {value} to {addr}")
         except (KeyError, Exception) as err: # noqa
             msg = f"{err}: GET did not succeed"
