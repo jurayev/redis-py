@@ -26,7 +26,7 @@ def handle_echo(s):
 def handle_set(s):
     print("SET, Y/N?")
     keys = ["hey", "banana", "hello", "world"]
-    values = ["1", "2", "3", "apple", "tennis"]
+    values = ["1", "banana", "water", "apple", "tennis"]
     while input().lower() == "y":
         key, value = random.choice(keys), random.choice(values)
         s.sendall(f"*3\r\n$3\r\nSET\r\n${len(key)}\r\n{key}\r\n${len(value)}\r\n{value}\r\n".encode())

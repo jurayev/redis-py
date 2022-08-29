@@ -2,17 +2,18 @@ import socket
 import concurrent.futures
 
 from commands.commands import Commands
+from storage.base_storage import BaseStorage
 from utils.parser import RespParser
 
 
 class Redis(Commands):
-    def __init__(self, host: str, port: int, reuse: bool = True, workers: int = None):
+    def __init__(self, storage: BaseStorage, host: str, port: int, reuse: bool = True, workers: int = None):
         self.host = host
         self.port = port
         self.reuse = reuse
         self.workers = workers
         self.socket = None
-        self.storage = {}
+        self.storage = storage
 
     def __enter__(self):
         self.socket = socket.create_server((self.host, self.port), reuse_port=self.reuse)
@@ -50,9 +51,9 @@ class Redis(Commands):
                 elif command == "PING":
                     self.ping(client_conn, addr, values)
                 elif command == "SET":
-                    self.set(self, client_conn, addr, values)
+                    self.set(self.storage, client_conn, addr, values)
                 elif command == "GET":
-                    self.get(self, client_conn, addr, values)
+                    self.get(self.storage, client_conn, addr, values)
                 else:
                     self.error(client_conn, addr, f"unknown command {command}", data)
                 print("--------------------------------")
