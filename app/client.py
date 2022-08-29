@@ -35,6 +35,18 @@ def handle_set(s):
         print("SET again, Y/N?")
 
 
+def handle_set_with_expiry(s):
+    print("SET, Y/N?")
+    keys = ["hey", "banana", "hello", "world"]
+    values = ["1", "banana", "water", "apple", "tennis"]
+    expiry = ["5000", "1000", "10000", "1000000"]
+    while input().lower() == "y":
+        key, value, ex = random.choice(keys), random.choice(values), random.choice(expiry)
+        s.sendall(f"*5\r\n$3\r\nSET\r\n${len(key)}\r\n{key}\r\n${len(value)}\r\n{value}\r\n$2\r\nPX\r\n${len(ex)}\r\n{ex}\r\n".encode())
+        data = s.recv(1024)
+        print(f"Received {data}")
+        print("SET again, Y/N?")
+
 def handle_get(s):
     print("GET, Y/N?")
     values = ["hey", "banana", "hello", "world", "tennis"]
@@ -55,7 +67,7 @@ def main(command):
         elif command == "ECHO":
             handle_echo(s)
         elif command == "SET":
-            handle_set(s)
+            handle_set_with_expiry(s)
         elif command == "GET":
             handle_get(s)
         else:

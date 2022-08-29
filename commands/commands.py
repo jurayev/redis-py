@@ -3,8 +3,13 @@ class Commands:
     @staticmethod
     def set(storage, client_conn, addr, *data):
         try:
-            key, value = data[0]
-            storage.set(key, value)
+            data = data[0]
+            key, value = data[0], data[1]
+            if "px" in data or "PX" in data:
+                ttl = int(data[-1])
+                storage.set(key, value, ttl)
+            else:
+                storage.set(key, value)
             client_conn.sendall(b"+OK\r\n")
             print(f"Send SET OK to {addr}")
         except Exception:  # noqa
@@ -13,8 +18,11 @@ class Commands:
     @staticmethod
     def get(storage, client_conn, addr, *data):
         try:
-            key = data[0][0]
+            data = data[0]
+            key = data[0]
             value = storage.get(key)
+            if not value:
+                raise KeyError
             client_conn.sendall(f"+{value}\r\n".encode())
             print(f"Send GET {value} to {addr}")
         except (KeyError, Exception) as err: # noqa
