@@ -5,4 +5,4 @@
 # CodeCrafters uses this file to test your code. Don't make any changes here!
 #
 # DON'T EDIT THIS!
-exec python3 -m app.client ECHO
+exec python3 -m app.client $1
