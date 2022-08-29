@@ -11,7 +11,7 @@ class KeyValue(BaseStorage):
         ts = None
         if ttl:
             expiry = datetime.utcnow() + timedelta(milliseconds=ttl)
-            ts = expiry
+            ts = expiry.timestamp()
         self.data[key] = (value, ts)
 
     def get(self, key):
