@@ -3,59 +3,72 @@ import socket
 import sys
 
 from env.env import environment as env
+from utils.logger import get_logger
+
+log = get_logger(__name__)
 
 
 def handle_ping(s):
-    print("PING, Y/N?")
+    log.info("PING, Y/N?")
     while input().lower() == "y":
         s.sendall(f"*1\r\n$4\r\nPING\r\n".encode())
         data = s.recv(1024)
-        print(f"Received {data!r}")
-        print("PING again, Y/N?")
+        log.info(f"Received {data!r}")
+        log.info("PING again, Y/N?")
 
 
 def handle_echo(s):
-    print("ECHO, Y/N?")
+    log.info("ECHO, Y/N?")
     strings = ["hey", "banana", "hello", "world"]
     while input().lower() == "y":
         s.sendall(f"*2\r\n$4\r\nECHO\r\n$3\r\n{random.choice(strings)}\r\n".encode())
         data = s.recv(1024)
-        print(f"Received {data}")
-        print("ECHO again, Y/N?")
+        log.info(f"Received {data}")
+        log.info("ECHO again, Y/N?")
+
 
 def handle_set(s):
-    print("SET, Y/N?")
+    log.info("SET, Y/N?")
     keys = ["hey", "banana", "hello", "world"]
     values = ["1", "banana", "water", "apple", "tennis"]
     while input().lower() == "y":
         key, value = random.choice(keys), random.choice(values)
-        s.sendall(f"*3\r\n$3\r\nSET\r\n${len(key)}\r\n{key}\r\n${len(value)}\r\n{value}\r\n".encode())
+        s.sendall(
+            f"*3\r\n$3\r\nSET\r\n${len(key)}\r\n{key}\r\n${len(value)}\r\n{value}\r\n".encode()
+        )
         data = s.recv(1024)
-        print(f"Received {data}")
-        print("SET again, Y/N?")
+        log.info(f"Received {data}")
+        log.info("SET again, Y/N?")
 
 
 def handle_set_with_expiry(s):
-    print("SET, Y/N?")
+    log.info("SET, Y/N?")
     keys = ["hey", "banana", "hello", "world"]
     values = ["1", "banana", "water", "apple", "tennis"]
     expiry = ["5000", "1000", "10000", "1000000"]
     while input().lower() == "y":
-        key, value, ex = random.choice(keys), random.choice(values), random.choice(expiry)
-        s.sendall(f"*5\r\n$3\r\nSET\r\n${len(key)}\r\n{key}\r\n${len(value)}\r\n{value}\r\n$2\r\nPX\r\n${len(ex)}\r\n{ex}\r\n".encode())
+        key, value, ex = (
+            random.choice(keys),
+            random.choice(values),
+            random.choice(expiry),
+        )
+        s.sendall(
+            f"*5\r\n$3\r\nSET\r\n${len(key)}\r\n{key}\r\n${len(value)}\r\n{value}\r\n$2\r\nPX\r\n${len(ex)}\r\n{ex}\r\n".encode()
+        )
         data = s.recv(1024)
-        print(f"Received {data}")
-        print("SET again, Y/N?")
+        log.info(f"Received {data}")
+        log.info("SET again, Y/N?")
+
 
 def handle_get(s):
-    print("GET, Y/N?")
+    log.info("GET, Y/N?")
     values = ["hey", "banana", "hello", "world", "tennis"]
     while input().lower() == "y":
         value = random.choice(values)
         s.sendall(f"*2\r\n$4\r\nGET\r\n${len(value)}\r\n{value}\r\n".encode())
         data = s.recv(1024)
-        print(f"Received {data}")
-        print("GET again, Y/N?")
+        log.info(f"Received {data}")
+        log.info("GET again, Y/N?")
 
 
 def main(command):
@@ -73,7 +86,7 @@ def main(command):
         else:
             raise Exception(f"Unsupported command type {sys.argv[1]}")
 
-    print("Disconnected")
+    log.info("Disconnected")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,9 @@
-class Commands:
+from utils.logger import get_logger
 
+log = get_logger(__name__)
+
+
+class Commands:
     @staticmethod
     def set(storage, client_conn, addr, *data):
         try:
@@ -11,7 +15,7 @@ class Commands:
             else:
                 storage.set(key, value)
             client_conn.sendall(b"+OK\r\n")
-            print(f"Send SET OK to {addr}")
+            log.info(f"Send SET OK to {addr}")
         except Exception:  # noqa
             Commands.error(client_conn, addr, "SET did not succeed", data)
 
@@ -25,23 +29,23 @@ class Commands:
                 client_conn.sendall(b"$-1\r\n")
             else:
                 client_conn.sendall(f"+{value}\r\n".encode())
-            print(f"Send GET {value} to {addr}")
-        except (KeyError, Exception) as err: # noqa
+            log.info(f"Send GET {value} to {addr}")
+        except (KeyError, Exception) as err:  # noqa
             msg = f"{err}: GET did not succeed"
             Commands.error(client_conn, addr, msg, data)
 
     @staticmethod
     def error(client_conn, addr, message, *data):
         client_conn.sendall(f"-ERR {message} with data {data}\r\n".encode())
-        print(f"Send ERR reply to {addr}")
+        log.error(f"Send ERR reply to {addr}")
 
     @staticmethod
     def echo(client_conn, addr, *data):
         strings = "".join(*data)
         client_conn.sendall(f"+{strings}\r\n".encode())
-        print(f"Send ECHO reply to {addr}")
+        log.info(f"Send ECHO reply to {addr}")
 
     @staticmethod
     def ping(client_conn, addr, *data):
         client_conn.sendall(b"+PONG\r\n")
-        print(f"Send PONG reply to {addr}")
+        log.info(f"Send PONG reply to {addr}")
