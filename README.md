@@ -11,6 +11,6 @@ Among the cool features covered:
 * Redis client and server
 
 Running local server is simple as `bash spawn_redis_server.sh`
-Running local client `bash spawn_redis_server.sh`
+Running local client `bash spawn_redis_client.sh`
 
 Credits to CodeCrafters.io for the challenge idea
